@@ -22,7 +22,7 @@ chmod g+rx /var/log/httpd/
 # td-agentの設定
 cp /etc/td-agent/td-agent.conf /etc/td-agent/td-agent.conf.bk
 
-cat <<_EOT_ 1>/etc/td-agent/td-agent.conf
+cat <<_EOF_ 1>/etc/td-agent/td-agent.conf
 ####
 ## Output descriptions:
 ##
@@ -42,7 +42,7 @@ cat <<_EOT_ 1>/etc/td-agent/td-agent.conf
   tag apache.access
 </source>
 
-<match apache.**>
+<match apache.access>
    type s3
 
    aws_key_id [ここにaccess keyを入力]
@@ -55,10 +55,11 @@ cat <<_EOT_ 1>/etc/td-agent/td-agent.conf
    buffer_path /var/log/td-agent/buffer/s3
 
    time_slice_format %Y%m%d-%H
-   time_slice_wait 10m
+#   time_slice_wait 10m
+   flush_interval 5s
    utc
 </match>
-_EOT_
+_EOF_
 
 #nokogiri対応
 /usr/lib64/fluent/ruby/bin/gem install nokogiri -- --with-xml2-lib=/usr/lib64 --with-xml2-include=/usr/include/libxml2/ --with-xslt-dir=/usr/include/libxslt
